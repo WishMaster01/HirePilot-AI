@@ -1,0 +1,17 @@
+export const careerModules = [
+  'Career DNA',
+  'Resume Builder',
+  'ATS Checker',
+  'Keyword Optimizer',
+  'Job Match',
+  'Interview Copilot',
+  'Resume/GitHub Video AI',
+  'Profile Training Lab',
+  'Roadmaps',
+  'DSA Coach',
+  'Project Analyzer',
+  'LinkedIn AI',
+  'Placement Tracker',
+  'Career Mentor',
+  'Community & XP',
+]

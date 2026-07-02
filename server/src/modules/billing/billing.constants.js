@@ -1,0 +1,1 @@
+export const SUBSCRIPTION_PLANS = ["FREE", "BASIC", "PRO", "PREMIUM"];

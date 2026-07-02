@@ -1,0 +1,1 @@
+export const MENTOR_CHAT_FEATURE = "MENTOR_CHAT";

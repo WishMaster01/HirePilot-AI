@@ -1,0 +1,567 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PRO
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+}
+
+enum PaymentStatus {
+  CREATED
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum RequestStatus {
+  SUCCESS
+  FAILED
+  BLOCKED
+}
+
+enum InterviewStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum PlacementStatus {
+  APPLIED
+  OA_SCHEDULED
+  OA_CLEARED
+  INTERVIEW
+  OFFER
+  REJECTED
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  name                  String
+  email                 String                 @unique
+  imageUrl              String?
+  role                  UserRole               @default(USER)
+  credits               Int                    @default(100)
+  isActive              Boolean                @default(true)
+  lastLoginAt           DateTime?
+  careerProfile         CareerProfile?
+  skills                Skill[]
+  resumes               Resume[]
+  jobMatches            JobMatch[]
+  interviews            Interview[]
+  videoAnalyses         VideoAnalysis[]
+  roadmaps              Roadmap[]
+  dsaAssessments        DSAAssessment[]
+  codingSubmissions     CodingSubmission[]
+  projectAnalyses       ProjectAnalysis[]
+  linkedInAnalyses      LinkedInAnalysis[]
+  placementApplications PlacementApplication[]
+  mentorSessions        MentorChatSession[]
+  communityPosts        CommunityPost[]
+  communityComments     CommunityComment[]
+  badges                UserBadge[]
+  subscriptions         Subscription[]
+  payments              Payment[]
+  creditUsage           AICreditUsage[]
+  notifications         Notification[]
+  adminLogs             AdminLog[]             @relation("AdminActor")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+model CareerProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  education          String?
+  techStack          String[]
+  projects           String[]
+  experience         String?
+  interests          String[]
+  careerScore        Int?
+  strengthScore      Int?
+  weaknessAnalysis   Json?
+  employabilityScore Int?
+  readinessScore     Int?
+  analysis           Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  category  String?
+  level     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Resume {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  content     String?
+  fileUrl     String?
+  fileName    String?
+  fileType    String?
+  fileSize    Int?
+  analyses    ResumeAnalysis[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([userId])
+}
+
+model ResumeAnalysis {
+  id               String   @id @default(cuid())
+  resumeId         String
+  resume           Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  type             String
+  score            Int?
+  missingSkills    String[]
+  missingKeywords  String[]
+  missingProjects  String[]
+  certifications   String[]
+  rewrittenContent String?
+  suggestions      Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([resumeId])
+  @@index([type])
+}
+
+model JobMatch {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumeId           String?
+  role               String
+  company            String?
+  jobType            String?
+  matchPercentage    Int
+  extractedSkills    String[]
+  missingSkills      String[]
+  suggestions        Json?
+  sourcePayload      Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+  @@index([matchPercentage])
+}
+
+model Interview {
+  id          String              @id @default(cuid())
+  userId      String
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String
+  experience  String?
+  mode        String
+  company     String?
+  difficulty  String?
+  status      InterviewStatus     @default(DRAFT)
+  finalScore  Float?
+  questions   InterviewQuestion[]
+  answers     InterviewAnswer[]
+  feedback    InterviewFeedback[]
+  video       VideoAnalysis?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model InterviewQuestion {
+  id          String    @id @default(cuid())
+  interviewId String
+  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  question    String
+  difficulty  String?
+  timeLimit   Int?
+  order       Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([interviewId, order])
+  @@index([interviewId])
+}
+
+model InterviewAnswer {
+  id          String    @id @default(cuid())
+  interviewId String
+  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  questionId  String?
+  answer      String
+  timeTaken   Int?
+  score       Float?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([interviewId])
+}
+
+model InterviewFeedback {
+  id            String    @id @default(cuid())
+  interviewId   String
+  interview     Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  confidence    Float?
+  communication Float?
+  correctness   Float?
+  finalScore    Float?
+  feedback      String
+  raw           Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([interviewId])
+}
+
+model VideoAnalysis {
+  id                   String    @id @default(cuid())
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviewId          String    @unique
+  interview            Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  fileUrl              String?
+  eyeContact           Int?
+  speakingSpeed        Int?
+  confidence           Int?
+  facialExpression     Int?
+  fillerWords          Int?
+  communicationSkills  Int?
+  professionalismScore Int?
+  report               Json?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Roadmap {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String
+  summary     String?
+  timeline    String?
+  progress    Int           @default(0)
+  steps       RoadmapStep[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+model RoadmapStep {
+  id          String   @id @default(cuid())
+  roadmapId   String
+  roadmap     Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  skills      String[]
+  technologies String[]
+  courses     String[]
+  certifications String[]
+  projects    String[]
+  order       Int
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([roadmapId, order])
+  @@index([roadmapId])
+}
+
+model DSAAssessment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic     String
+  score     Int
+  strengths String[]
+  weaknesses String[]
+  raw       Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([topic])
+}
+
+model CodingProblem {
+  id          String             @id @default(cuid())
+  title       String
+  slug        String             @unique
+  topic       String
+  difficulty  String
+  statement   String
+  examples    Json?
+  constraints String?
+  submissions CodingSubmission[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([topic])
+  @@index([difficulty])
+}
+
+model CodingSubmission {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId String?
+  problem   CodingProblem? @relation(fields: [problemId], references: [id], onDelete: SetNull)
+  code      String
+  language  String
+  score     Int?
+  review    Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([problemId])
+}
+
+model ProjectAnalysis {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  githubUrl         String
+  projectScore      Int?
+  architectureReview Json?
+  resumeValueScore  Int?
+  suggestions       Json?
+  interviewQuestions String[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model LinkedInAnalysis {
+  id                       String   @id @default(cuid())
+  userId                   String
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileUrl               String?
+  headline                 String?
+  about                    String?
+  skills                   String[]
+  keywords                 String[]
+  recruiterVisibilityScore Int?
+  suggestions              Json?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model PlacementApplication {
+  id                 String          @id @default(cuid())
+  userId             String
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company            String
+  role               String
+  status             PlacementStatus @default(APPLIED)
+  oaResult           String?
+  interviewRounds    Json?
+  notes              String?
+  successProbability Int?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model MentorChatSession {
+  id        String              @id @default(cuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String?
+  messages  MentorChatMessage[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([userId])
+}
+
+model MentorChatMessage {
+  id        String            @id @default(cuid())
+  sessionId String
+  session   MentorChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String
+  content   String
+  metadata  Json?
+  createdAt DateTime          @default(now())
+
+  @@index([sessionId])
+}
+
+model CommunityPost {
+  id        String             @id @default(cuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  category  String?
+  comments  CommunityComment[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([category])
+}
+
+model CommunityComment {
+  id        String        @id @default(cuid())
+  postId    String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([postId])
+  @@index([userId])
+}
+
+model Badge {
+  id          String      @id @default(cuid())
+  key         String      @unique
+  name        String
+  description String?
+  xp          Int         @default(0)
+  users       UserBadge[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId   String
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  awardedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(INACTIVE)
+  monthlyCreditLimit   Int                @default(100)
+  interviewLimit       Int                @default(3)
+  resumeAnalysisLimit  Int                @default(3)
+  roadmapLimit         Int                @default(1)
+  videoAnalysisEnabled Boolean            @default(false)
+  projectAnalyzerEnabled Boolean          @default(false)
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([plan])
+  @@index([status])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider        String
+  providerId      String?
+  plan            String?
+  amount          Int
+  currency        String        @default("INR")
+  credits         Int?
+  status          PaymentStatus @default(CREATED)
+  metadata        Json?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model AICreditUsage {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  featureName     String
+  tokensUsed      Int?
+  creditsConsumed Int
+  status          RequestStatus
+  metadata        Json?
+  createdAt       DateTime      @default(now())
+
+  @@index([userId])
+  @@index([featureName])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([read])
+}
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation("AdminActor", fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  target    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+}

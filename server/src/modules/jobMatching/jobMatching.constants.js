@@ -1,0 +1,1 @@
+export const JOB_MATCH_FEATURE = "JOB_MATCH_ANALYZE";

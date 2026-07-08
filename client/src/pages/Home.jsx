@@ -178,7 +178,7 @@ function Home() {
                   Build your Career DNA, optimize resumes, match roles, generate roadmaps, track placements, practice DSA, analyze projects, improve LinkedIn, and use a mentor-style career assistant.
                 </p>
                 <button onClick={() => navigate("/career")} className='btn-primary mt-6 px-7 py-3'>
-                  Open Career Command Center
+                  Open Career Hub
                 </button>
               </div>
               <div className='grid gap-3 sm:grid-cols-2'>

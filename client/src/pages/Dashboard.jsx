@@ -16,7 +16,7 @@ function Dashboard() {
               Track readiness, applications, AI credits, plan status, notifications, and recommended actions across every career suite.
             </p>
           </div>
-          <button onClick={() => navigate('/career')} className='btn-primary w-fit px-6 py-3'>Open command center</button>
+          <button onClick={() => navigate('/career-intelligence')} className='btn-primary w-fit px-6 py-3'>Start Career Intelligence</button>
         </div>
 
         <section className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>

@@ -34,7 +34,7 @@ function AppRoutes() {
       <Route path='/login' element={<Auth />} />
       <Route path='/register' element={<Auth />} />
       <Route path='/dashboard' element={<Dashboard />} />
-      <Route path='/career' element={<CareerPlatform />} />
+      <Route path='/career' element={<Dashboard />} />
       <Route path='/career-intelligence' element={<CareerIntelligence />} />
       <Route path='/resume-intelligence' element={<ResumeIntelligence />} />
       <Route path='/job-placement' element={<JobPlacement />} />
@@ -48,25 +48,26 @@ function AppRoutes() {
       <Route path='/productivity' element={<Productivity />} />
       <Route path='/admin-dashboard' element={<AdminDashboard />} />
       <Route path='/platform-settings' element={<PlatformSettings />} />
-      <Route path='/career-profile' element={<CareerPlatform />} />
-      <Route path='/resume-ai' element={<CareerPlatform />} />
-      <Route path='/job-matching' element={<CareerPlatform />} />
+      <Route path='/career-profile' element={<CareerIntelligence />} />
+      <Route path='/resume-ai' element={<ResumeIntelligence />} />
+      <Route path='/job-matching' element={<JobPlacement />} />
       <Route path='/interview' element={<InterviewPage />} />
       <Route path='/mock-interview' element={<InterviewPage />} />
       <Route path='/contextual-video-interview' element={<ContextualVideoInterview />} />
       <Route path='/interview-training' element={<ProfileInterviewTraining />} />
-      <Route path='/video-analysis' element={<CareerPlatform />} />
-      <Route path='/roadmap-generator' element={<CareerPlatform />} />
-      <Route path='/dsa-coach' element={<CareerPlatform />} />
-      <Route path='/project-analyzer' element={<CareerPlatform />} />
-      <Route path='/linkedin-optimizer' element={<CareerPlatform />} />
-      <Route path='/placement-tracker' element={<CareerPlatform />} />
-      <Route path='/mentor-chat' element={<CareerPlatform />} />
+      <Route path='/video-analysis' element={<InterviewPreparation />} />
+      <Route path='/roadmap-generator' element={<AIMentor />} />
+      <Route path='/dsa-coach' element={<CodingDSA />} />
+      <Route path='/project-analyzer' element={<PortfolioBranding />} />
+      <Route path='/linkedin-optimizer' element={<PortfolioBranding />} />
+      <Route path='/placement-tracker' element={<JobPlacement />} />
+      <Route path='/mentor-chat' element={<AIMentor />} />
       <Route path='/community' element={<Community />} />
       <Route path='/gamification' element={<Gamification />} />
       <Route path='/history' element={<InterviewHistory />} />
       <Route path='/pricing' element={<Pricing />} />
-      <Route path='/settings' element={<CareerPlatform />} />
+      <Route path='/settings' element={<PlatformSettings />} />
+      <Route path='/career-command-center' element={<CareerPlatform />} />
       <Route path='/report/:id' element={<InterviewReport />} />
       <Route path='/admin' element={<LegacyAdminDashboard />} />
       <Route path='*' element={<NotFound />} />

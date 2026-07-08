@@ -55,7 +55,7 @@ function SuiteShell({ suiteKey }) {
             onClick={() => navigate("/career")}
             className="btn-primary w-fit px-5 py-3"
           >
-            <BsLightningCharge /> Open command center
+            <BsLightningCharge /> Back to Career Hub
           </button>
         </div>
 

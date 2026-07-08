@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { BsArrowRight, BsHouseDoor, BsMic, BsStars } from 'react-icons/bs'
 import { dashboardMetrics, dashboardStatus, suiteCatalog } from '../data/suiteCatalog'
 
 function Dashboard() {
@@ -16,16 +17,33 @@ function Dashboard() {
               Track readiness, applications, AI credits, plan status, notifications, and recommended actions across every career suite.
             </p>
           </div>
-          <button onClick={() => navigate('/career-intelligence')} className='btn-primary w-fit px-6 py-3'>Start Career Intelligence</button>
+          <div className='flex flex-col gap-3 sm:flex-row lg:justify-end'>
+            <button onClick={() => navigate('/')} className='btn-secondary w-fit px-5 py-3'>
+              <BsHouseDoor /> Home
+            </button>
+            <button onClick={() => navigate('/mock-interview')} className='btn-primary w-fit px-5 py-3'>
+              <BsMic /> Start AI Mock Interview
+            </button>
+            <button onClick={() => navigate('/career-intelligence')} className='btn-secondary w-fit px-5 py-3'>
+              <BsStars /> Career Intelligence
+            </button>
+          </div>
         </div>
 
-        <section className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-          {dashboardMetrics.map(([label, value]) => (
-            <div key={label} className='surface-card p-5'>
-              <p className='text-sm font-bold text-slate-500'>{label}</p>
-              <p className='mt-2 text-3xl font-black text-slate-950'>{value}%</p>
-              <div className='mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100'>
-                <div className='h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500' style={{ width: `${value}%` }} />
+        <section className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
+          {dashboardMetrics.map(([label, value], index) => (
+            <div key={label} className='overflow-hidden rounded-lg border border-slate-800 bg-slate-950 text-white shadow-lg shadow-slate-950/10'>
+              <div className='flex min-h-32 flex-col justify-between p-4'>
+                <div className='flex items-center justify-between gap-3'>
+                  <p className='max-w-32 text-xs font-black uppercase tracking-wide text-slate-300'>{label}</p>
+                  <span className='rounded-full bg-white/10 px-2.5 py-1 text-xs font-black text-emerald-200'>KPI {index + 1}</span>
+                </div>
+                <div>
+                  <p className='text-4xl font-black leading-none'>{value}%</p>
+                  <div className='mt-4 h-1.5 overflow-hidden rounded-full bg-white/10'>
+                    <div className='h-full rounded-full bg-emerald-400' style={{ width: `${value}%` }} />
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -35,28 +53,58 @@ function Dashboard() {
           {dashboardStatus.map((item) => {
             const Icon = item.icon
             return (
-              <div key={item.label} className='surface-card p-5'>
-                <div className='mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'>
+              <div key={item.label} className='rounded-lg border border-emerald-200 bg-emerald-50/80 p-5 shadow-sm'>
+                <div className='mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-white text-emerald-700 ring-1 ring-emerald-100'>
                   <Icon />
                 </div>
-                <p className='text-sm font-bold text-slate-500'>{item.label}</p>
+                <p className='text-sm font-black uppercase tracking-wide text-emerald-800'>{item.label}</p>
                 <p className='mt-1 text-2xl font-black text-slate-950'>{item.value}</p>
-                <p className='mt-2 text-sm text-slate-500'>{item.detail}</p>
+                <p className='mt-2 text-sm leading-relaxed text-slate-600'>{item.detail}</p>
               </div>
             )
           })}
         </section>
 
+        <div className='mt-8 flex items-end justify-between gap-4'>
+          <div>
+            <p className='eyebrow mb-3'>Interactive suites</p>
+            <h2 className='text-2xl font-black text-slate-950 sm:text-3xl'>Choose a workspace</h2>
+          </div>
+          <p className='hidden max-w-md text-right text-sm leading-relaxed text-slate-500 md:block'>
+            Suite cards open runnable tools with inputs, prompts, generated output, risks, and next actions.
+          </p>
+        </div>
+
         <section className='mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
           {suiteCatalog.map((suite) => {
             const Icon = suite.icon
             return (
-              <button key={suite.key} onClick={() => navigate(suite.path)} className='surface-card p-5 text-left transition hover:-translate-y-0.5 hover:shadow-lg'>
-                <div className='mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-white'>
-                  <Icon />
+              <button key={suite.key} onClick={() => navigate(suite.path)} className='group overflow-hidden rounded-lg border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-950/10'>
+                <div className='h-1.5 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500' />
+                <div className='p-5'>
+                  <div className='mb-5 flex items-start justify-between gap-4'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-slate-950 text-white shadow-md shadow-slate-950/15'>
+                      <Icon />
+                    </div>
+                    <span className='rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 group-hover:bg-emerald-100 group-hover:text-emerald-800'>
+                      {suite.score}%
+                    </span>
+                  </div>
+                  <h2 className='text-lg font-black text-slate-950'>{suite.title}</h2>
+                  <div className='mt-4 flex flex-wrap gap-2'>
+                    {suite.features.slice(0, 3).map((feature) => (
+                      <span key={feature} className='rounded-md bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600 ring-1 ring-slate-100'>
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                  <div className='mt-5 flex items-center justify-between border-t border-slate-100 pt-4'>
+                    <p className='text-sm font-black text-slate-700'>Open tools</p>
+                    <span className='flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white'>
+                      <BsArrowRight />
+                    </span>
+                  </div>
                 </div>
-                <h2 className='text-lg font-black text-slate-950'>{suite.title}</h2>
-                <p className='mt-2 text-sm text-slate-500'>{suite.features.slice(0, 3).join(', ')}</p>
               </button>
             )
           })}

@@ -8,7 +8,6 @@ import ProfileInterviewTraining from '../features/interviewCopilot/pages/Profile
 import InterviewHistory from '../features/interviewCopilot/pages/InterviewHistory'
 import Pricing from '../features/billing/pages/Pricing'
 import InterviewReport from '../features/interviewCopilot/pages/InterviewReport'
-import CareerPlatform from '../features/careerProfile/pages/CareerPlatform'
 import LegacyAdminDashboard from '../admin/AdminDashboard'
 import Dashboard from '../pages/Dashboard'
 import CareerIntelligence from '../pages/CareerIntelligence'
@@ -67,7 +66,6 @@ function AppRoutes() {
       <Route path='/history' element={<InterviewHistory />} />
       <Route path='/pricing' element={<Pricing />} />
       <Route path='/settings' element={<PlatformSettings />} />
-      <Route path='/career-command-center' element={<CareerPlatform />} />
       <Route path='/report/:id' element={<InterviewReport />} />
       <Route path='/admin' element={<LegacyAdminDashboard />} />
       <Route path='*' element={<NotFound />} />

@@ -8,6 +8,11 @@ import {
   getSuiteFields,
   runSuiteFeature,
 } from "../../data/suiteTools";
+import {
+  getDashboardState,
+  recordSuiteScore,
+  subscribeDashboardState,
+} from "../../utils/dashboardStore";
 
 function ScoreMeter({ label, value }) {
   return (
@@ -35,9 +40,13 @@ function SuiteShell({ suiteKey }) {
   const [activeFeature, setActiveFeature] = useState(suite.features[0]);
   const [inputs, setInputs] = useState(() => createInitialInputs(suite.key));
   const [outputs, setOutputs] = useState({});
+  const [dashboardState, setDashboardState] = useState(() => getDashboardState());
 
   const prompt = buildSuitePrompt({ suite, feature: activeFeature, inputs });
   const activeOutput = outputs[activeFeature];
+  const suiteScore = dashboardState.suiteScores[suite.key] ?? suite.score;
+
+  React.useEffect(() => subscribeDashboardState(setDashboardState), []);
 
   const updateInput = (key, value) => {
     setInputs((current) => ({ ...current, [key]: value }));
@@ -46,6 +55,12 @@ function SuiteShell({ suiteKey }) {
   const runFeature = () => {
     const result = runSuiteFeature({ suite, feature: activeFeature, inputs });
     setOutputs((current) => ({ ...current, [activeFeature]: result }));
+    recordSuiteScore({
+      suiteKey: suite.key,
+      suiteTitle: suite.title,
+      feature: activeFeature,
+      score: result.score,
+    });
   };
 
   const switchFeature = (feature) => {
@@ -112,7 +127,7 @@ function SuiteShell({ suiteKey }) {
               ))}
             </div>
             <div className="mt-5">
-              <ScoreMeter label={suite.scoreLabel} value={suite.score} />
+              <ScoreMeter label={suite.scoreLabel} value={suiteScore} />
             </div>
           </aside>
 
@@ -188,7 +203,7 @@ function SuiteShell({ suiteKey }) {
                           <p className="font-black text-slate-950">{title}</p>
                           <ul className="mt-3 space-y-2 text-sm text-slate-600">
                             {items.map((item) => (
-                              <li key={item}>• {item}</li>
+                              <li key={item}>- {item}</li>
                             ))}
                           </ul>
                         </div>

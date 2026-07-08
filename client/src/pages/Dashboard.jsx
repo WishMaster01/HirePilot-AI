@@ -1,10 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BsArrowRight, BsHouseDoor, BsMic, BsStars } from 'react-icons/bs'
+import { BsArrowRight, BsBroadcast, BsHouseDoor, BsMic, BsStars } from 'react-icons/bs'
 import { dashboardMetrics, dashboardStatus, suiteCatalog } from '../data/suiteCatalog'
+import { getDashboardState, subscribeDashboardState } from '../utils/dashboardStore'
 
 function Dashboard() {
   const navigate = useNavigate()
+  const [dashboardState, setDashboardState] = useState(() => getDashboardState())
+
+  useEffect(() => subscribeDashboardState(setDashboardState), [])
+
+  const liveMetrics = dashboardMetrics.map(([label, fallback]) => [label, dashboardState.metrics[label] ?? fallback])
+  const liveStatus = dashboardStatus.map((item) => ({
+    ...item,
+    value: dashboardState.status[item.label]?.value ?? item.value,
+    detail: dashboardState.status[item.label]?.detail ?? item.detail,
+  }))
 
   return (
     <div className='page-shell min-h-screen'>
@@ -31,7 +42,7 @@ function Dashboard() {
         </div>
 
         <section className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
-          {dashboardMetrics.map(([label, value], index) => (
+          {liveMetrics.map(([label, value], index) => (
             <div key={label} className='overflow-hidden rounded-lg border border-slate-800 bg-slate-950 text-white shadow-lg shadow-slate-950/10'>
               <div className='flex min-h-32 flex-col justify-between p-4'>
                 <div className='flex items-center justify-between gap-3'>
@@ -50,7 +61,7 @@ function Dashboard() {
         </section>
 
         <section className='mt-5 grid gap-4 md:grid-cols-3'>
-          {dashboardStatus.map((item) => {
+          {liveStatus.map((item) => {
             const Icon = item.icon
             return (
               <div key={item.label} className='rounded-lg border border-emerald-200 bg-emerald-50/80 p-5 shadow-sm'>
@@ -63,6 +74,36 @@ function Dashboard() {
               </div>
             )
           })}
+        </section>
+
+        <section className='mt-5 overflow-hidden rounded-lg border border-blue-200 bg-white shadow-sm'>
+          <div className='grid gap-0 lg:grid-cols-[0.85fr_1.15fr]'>
+            <div className='bg-slate-950 p-5 text-white'>
+              <div className='flex items-center gap-3'>
+                <div className='flex h-11 w-11 items-center justify-center rounded-lg bg-white/10 text-cyan-200'>
+                  <BsBroadcast />
+                </div>
+                <div>
+                  <p className='text-xs font-black uppercase tracking-wide text-cyan-200'>Admin realtime update</p>
+                  <h2 className='mt-1 text-xl font-black'>{dashboardState.realtime.headline}</h2>
+                </div>
+              </div>
+              <p className='mt-4 text-sm leading-relaxed text-slate-300'>{dashboardState.realtime.message}</p>
+              <span className='mt-4 inline-flex rounded-full bg-cyan-400/15 px-3 py-1 text-xs font-black text-cyan-100'>
+                Priority: {dashboardState.realtime.priority}
+              </span>
+            </div>
+            <div className='p-5'>
+              <p className='text-sm font-black uppercase tracking-wide text-slate-500'>Recent score activity</p>
+              <div className='mt-3 grid gap-2 md:grid-cols-2'>
+                {dashboardState.activity.slice(0, 4).map((item) => (
+                  <div key={item} className='rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-100'>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
         <div className='mt-8 flex items-end justify-between gap-4'>
@@ -87,7 +128,7 @@ function Dashboard() {
                       <Icon />
                     </div>
                     <span className='rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 group-hover:bg-emerald-100 group-hover:text-emerald-800'>
-                      {suite.score}%
+                      {dashboardState.suiteScores[suite.key] ?? suite.score}%
                     </span>
                   </div>
                   <h2 className='text-lg font-black text-slate-950'>{suite.title}</h2>

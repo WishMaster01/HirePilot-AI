@@ -8,7 +8,7 @@ import ProfileInterviewTraining from '../features/interviewCopilot/pages/Profile
 import InterviewHistory from '../features/interviewCopilot/pages/InterviewHistory'
 import Pricing from '../features/billing/pages/Pricing'
 import InterviewReport from '../features/interviewCopilot/pages/InterviewReport'
-import LegacyAdminDashboard from '../admin/AdminDashboard'
+import AdminConsole from '../admin/AdminDashboard'
 import Dashboard from '../pages/Dashboard'
 import CareerIntelligence from '../pages/CareerIntelligence'
 import ResumeIntelligence from '../pages/ResumeIntelligence'
@@ -21,7 +21,7 @@ import Community from '../pages/Community'
 import Gamification from '../pages/Gamification'
 import BillingSubscription from '../pages/BillingSubscription'
 import Productivity from '../pages/Productivity'
-import AdminDashboard from '../pages/AdminDashboard'
+import AdministrationSuite from '../pages/AdminDashboard'
 import PlatformSettings from '../pages/PlatformSettings'
 import NotFound from '../pages/NotFound'
 
@@ -45,7 +45,8 @@ function AppRoutes() {
       <Route path='/gamification-suite' element={<Gamification />} />
       <Route path='/billing-subscription' element={<BillingSubscription />} />
       <Route path='/productivity' element={<Productivity />} />
-      <Route path='/admin-dashboard' element={<AdminDashboard />} />
+      <Route path='/admin-dashboard' element={<AdminConsole />} />
+      <Route path='/administration-suite' element={<AdministrationSuite />} />
       <Route path='/platform-settings' element={<PlatformSettings />} />
       <Route path='/career-profile' element={<CareerIntelligence />} />
       <Route path='/resume-ai' element={<ResumeIntelligence />} />
@@ -67,7 +68,7 @@ function AppRoutes() {
       <Route path='/pricing' element={<Pricing />} />
       <Route path='/settings' element={<PlatformSettings />} />
       <Route path='/report/:id' element={<InterviewReport />} />
-      <Route path='/admin' element={<LegacyAdminDashboard />} />
+      <Route path='/admin' element={<AdminConsole />} />
       <Route path='*' element={<NotFound />} />
     </Routes>
   )

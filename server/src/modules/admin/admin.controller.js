@@ -15,6 +15,7 @@ import { analyzeLinkedInAI } from "../../services/ai/linkedInAI.service.js";
 import { generatePlacementReportAI } from "../../services/ai/placementAI.service.js";
 import { answerMentorAI } from "../../services/ai/mentorAI.service.js";
 import { aggregateAIUsageByFeature, aggregateUsersByPlan, calculateDashboardKPIs, calculateRevenueMetrics, detectAbnormalAIUsage } from "../../shared/algorithms/adminAnalytics.algorithm.js";
+import { adminRoleSchema } from "./admin.validator.js";
 
 const idSchema = z.object({ id: z.string().min(1) });
 const parse = (schema, value) => schema.parse(value);
@@ -62,6 +63,9 @@ export const adminInterviews = asyncHandler(async (req, res) => successResponse(
 
 export const adminReports = asyncHandler(async (req, res) => successResponse(res, "Admin reports fetched", await prisma.aICreditUsage.findMany({ include: { user: true }, orderBy: { createdAt: "desc" } })));
 
-export const adminUpdateUserRole = asyncHandler(async (req, res) => successResponse(res, "User role updated", await prisma.user.update({ where: { id: req.params.id }, data: { role: req.body.role } })));
+export const adminUpdateUserRole = asyncHandler(async (req, res) => {
+  const { role } = adminRoleSchema.parse(req.body);
+  return successResponse(res, "User role updated", await prisma.user.update({ where: { id: req.params.id }, data: { role } }));
+});
 
 export const adminDeleteUser = asyncHandler(async (req, res) => { await prisma.user.delete({ where: { id: req.params.id } }); return successResponse(res, "User deleted"); });

@@ -128,7 +128,7 @@ export const suiteCatalog = [
   {
     key: 'administration',
     title: '\u{1F6E1}\u{FE0F} Administration',
-    path: '/admin-dashboard',
+    path: '/administration-suite',
     icon: BsShieldCheck,
     scoreLabel: 'System health',
     score: 92,

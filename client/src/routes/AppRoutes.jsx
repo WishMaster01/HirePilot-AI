@@ -9,7 +9,21 @@ import InterviewHistory from '../features/interviewCopilot/pages/InterviewHistor
 import Pricing from '../features/billing/pages/Pricing'
 import InterviewReport from '../features/interviewCopilot/pages/InterviewReport'
 import CareerPlatform from '../features/careerProfile/pages/CareerPlatform'
-import AdminDashboard from '../admin/AdminDashboard'
+import LegacyAdminDashboard from '../admin/AdminDashboard'
+import Dashboard from '../pages/Dashboard'
+import CareerIntelligence from '../pages/CareerIntelligence'
+import ResumeIntelligence from '../pages/ResumeIntelligence'
+import JobPlacement from '../pages/JobPlacement'
+import InterviewPreparation from '../pages/InterviewPreparation'
+import CodingDSA from '../pages/CodingDSA'
+import PortfolioBranding from '../pages/PortfolioBranding'
+import AIMentor from '../pages/AIMentor'
+import Community from '../pages/Community'
+import Gamification from '../pages/Gamification'
+import BillingSubscription from '../pages/BillingSubscription'
+import Productivity from '../pages/Productivity'
+import AdminDashboard from '../pages/AdminDashboard'
+import PlatformSettings from '../pages/PlatformSettings'
 import NotFound from '../pages/NotFound'
 
 function AppRoutes() {
@@ -19,8 +33,21 @@ function AppRoutes() {
       <Route path='/auth' element={<Auth />} />
       <Route path='/login' element={<Auth />} />
       <Route path='/register' element={<Auth />} />
-      <Route path='/dashboard' element={<CareerPlatform />} />
+      <Route path='/dashboard' element={<Dashboard />} />
       <Route path='/career' element={<CareerPlatform />} />
+      <Route path='/career-intelligence' element={<CareerIntelligence />} />
+      <Route path='/resume-intelligence' element={<ResumeIntelligence />} />
+      <Route path='/job-placement' element={<JobPlacement />} />
+      <Route path='/interview-preparation' element={<InterviewPreparation />} />
+      <Route path='/coding-dsa' element={<CodingDSA />} />
+      <Route path='/portfolio-branding' element={<PortfolioBranding />} />
+      <Route path='/ai-mentor' element={<AIMentor />} />
+      <Route path='/community-suite' element={<Community />} />
+      <Route path='/gamification-suite' element={<Gamification />} />
+      <Route path='/billing-subscription' element={<BillingSubscription />} />
+      <Route path='/productivity' element={<Productivity />} />
+      <Route path='/admin-dashboard' element={<AdminDashboard />} />
+      <Route path='/platform-settings' element={<PlatformSettings />} />
       <Route path='/career-profile' element={<CareerPlatform />} />
       <Route path='/resume-ai' element={<CareerPlatform />} />
       <Route path='/job-matching' element={<CareerPlatform />} />
@@ -35,13 +62,13 @@ function AppRoutes() {
       <Route path='/linkedin-optimizer' element={<CareerPlatform />} />
       <Route path='/placement-tracker' element={<CareerPlatform />} />
       <Route path='/mentor-chat' element={<CareerPlatform />} />
-      <Route path='/community' element={<CareerPlatform />} />
-      <Route path='/gamification' element={<CareerPlatform />} />
+      <Route path='/community' element={<Community />} />
+      <Route path='/gamification' element={<Gamification />} />
       <Route path='/history' element={<InterviewHistory />} />
       <Route path='/pricing' element={<Pricing />} />
       <Route path='/settings' element={<CareerPlatform />} />
       <Route path='/report/:id' element={<InterviewReport />} />
-      <Route path='/admin' element={<AdminDashboard />} />
+      <Route path='/admin' element={<LegacyAdminDashboard />} />
       <Route path='*' element={<NotFound />} />
     </Routes>
   )

@@ -17,6 +17,7 @@ import communityRouter from "./modules/community/community.routes.js";
 import gamificationRouter from "./modules/gamification/gamification.routes.js";
 import notificationsRouter from "./modules/notifications/notifications.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
+import platformCompatibilityRouter from "./modules/platformCompatibility/platformCompatibility.routes.js";
 import { authLimiter } from "./middlewares/rateLimit.middleware.js";
 
 export {
@@ -39,10 +40,12 @@ export {
   gamificationRouter,
   notificationsRouter,
   adminRouter,
+  platformCompatibilityRouter,
 };
 
 export const registerRoutes = (app) => {
   app.use("/api/auth", authLimiter, authRouter);
+  app.use("/api", platformCompatibilityRouter);
   app.use("/api", userRouter);
   app.use("/api", interviewRouter);
   app.use("/api", contextualInterviewRouter);
